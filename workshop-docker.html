@@ -27,8 +27,1212 @@
 <body>
     <div class="reveal">
         <div class="slides">
+            <section>
+                <h1>Workshop Docker</h1>
+                <h2>Magdeburger Developer Days 2018</h2>
+                <h3>09.04.2018</h3>
+                <img src="images/docker.png" style="height: 300px;border: 0px;background: transparent" />
+            </section>
+            <section>
+                <section>
+                    <pre><code class="docker">docker trainer inspect fpommerening</code></pre>
+                    <h2 class="fragment">Frank Pommerening</h2>
+                    <img src="images/fp.jpg" style="border:0px;width:175px" class="fragment">
+                    <ul class="fragment">
+                        <li>Senior - Softwareentwickler</li>
+                        <li>Consultant</li>
+                        <li>Softwarearchitekt</li>
+                    </ul>
+                    <br />
+                    <br />
+                    <a href="mailto:frank@pommerening-online.de" class="fragment">frank@pommerening-online.de</a>
+                </section>
+                <section data-background="images/axp.svg">
+                    AXP Consulting GmbH & Co. KG in Leipzig
+                    <br/> Gründung: Mai 2012
+                    <br /> Anzahl Mitarbeiter: 8 feste
+                    <br/> Branchenfokus: Energiebranche
+                    <br/>
+                    <br/>
+                    <br/>
+                    <ul>
 
-            
+                        <li>Consulting (fachlich & IT)
+                            <ul>
+                                <li>Requirements Engineering / Projektmanagement </li>
+                                <li>IT-Fachprozess-Analyse / Dokumentation</li>
+                            </ul>
+                        </li>
+                        <li>Software-Entwicklung
+                            <ul>
+                                <li>Microservices, SOA, REST, OOA und OOD, Docker</li>
+                                <li>Microsoft Technologien z.B. .NET (C#), WPF, WCF</li>
+                                <li>Datenbanken (MS SQL Server / Oracle / MongoDB)
+                            </ul>
+                            </li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker im Überblick</h2>
+                </section>
+                <section>
+                    <h3>Was ist Docker?</h3>
+                    Anwendungsvirtualisierung: Anwendungen werden unter Verwendung von Betriebssystemvirtualisierung in Containern isoliert ausgeführt.
+                    <br />
+                    <br />
+                    <span class="fragment">
+                        Buzzword-Bingo:
+                    </span>
+                    <br/>
+                    <ul>
+                        <li class="fragment">Microservices</li>
+                        <li class="fragment">DevOps</li>
+                        <li class="fragment">CI / CD (Continuous Integration / Continuous Deployment)</li>
+                        <li class="fragment">XaaS (Anything as a Service)</li>
+                        <li class="fragment">Portablität</li>
+                    </ul>
+                </section>
+                <section>
+
+                    <h3>Virtualisierung vs. Container</h3>
+                    <img src="images/schema_vm.svg" alt="schema virtual maschine" style="border:0;">
+                    <img src="images/schema_docker.svg" alt="schema docker" style="border:0;">
+                </section>
+                <section>
+                    <h3>Images</h3>
+                    <img src="images/layers.svg" alt="docker layers" style="border:0; float:right" />
+                    <ul>
+                        <li>Template für Container</li>
+                        <li>Snapshot / Archiv</li>
+                        <li>Readonly und versioniert </li>
+                        <li>Ebenenprinzip (Speicherung nur Differenzen)</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Container</h3>
+                    <ul>
+                        <li>Laufende Instanz eines Image</li>
+                        <li>nur zur Laufzeit existent</li>
+                        <li>Schreibbare Schicht wird
+                            <br />oberhalb des Image bereitgestellt</li>
+                    </ul>
+                    <img src="images/schema_container.svg" alt="schema docker" style="border:0;float:right">
+                </section>
+                <section>
+                    <h3>Docker-Ökosystem</h3>
+                    Docker umfasst mehr als die Ausführungsumgebung für Container:
+                    <br />
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Compose / Stack</td>
+                                <td>Verwalten von Anwendungsstacks</td>
+                            </tr>
+                            <tr>
+                                <td>Hub</td>
+                                <td>(öffentliche) Docker-Registry</td>
+                            </tr>
+                            <tr>
+                                <td>Swarm</td>
+                                <td>Verwaltung von Container in Clustern</td>
+                            </tr>
+                            <tr>
+                                <td>Cloud</td>
+                                <td>Hostinganbieter</td>
+                            </tr>
+                            <tr>
+                                <td>Maschine</td>
+                                <td>Bereitstellung von Docker-Hosts</td>
+                            </tr>
+                            <tr>
+                                <td>Store</td>
+                                <td>Bereitstellung zertifizierter Images</td>
+                            </tr>
+                            <tr>
+                                <td>Kinematic</td>
+                                <td>Grafisches Verwaltungswerkzeug</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker unter Linux</h2>
+                </section>
+                <section>
+                    Start im März 2013
+                    <br/>
+                    <span class="fragment">Alles neu</span>
+                    <span class="fragment">- NEIN</span>
+                    </br>
+                    <span class="fragment">
+                        Verwendung von erprobten Technologien des Linux-Kernel
+                        <ul>
+                            <li>LXC (BSD Jails / Solaris Zonen / OpenVZ)</li>
+                            <li>Cgroups
+                                <ul>
+                                    <li>Ressourcenlimits</li>
+                                    <li>CPU-Zeit, Speicher, IO ...</li>
+                                </ul>
+                            </li>
+                            <li>Namespaces
+                                <ul>
+                                    <li>Simulation geschlossener Umgebungen</li>
+                                    <li>Hostnamen, Netzwerk, Prozesse ...</li>
+                                </ul>
+                            </li>
+                            <li>chroot (Verbindung des Mountpunkt)</li>
+                        </ul>
+                    </span>
+                </section>
+                <section>
+                    Heute Bestandteil vieler Standard-Distributionen
+                    <img src="images/ubuntulogo.png" style="border: 0px;float:right;height: 100px" />
+                    <img src="images/archlinuxlogo.svg" style="border: 0px; float:left;height: 100px; margin-top: 50px" />
+                    <ul>
+                        <li>Arch Linux</li>
+                        <li>CentOS</li>
+                        <li>Red Hat Enterprise Linux</li>
+                        <li>openSUSE / SUSE Linux Enterprise</li>
+                        <li>Ubuntu</li>
+                        <li>...</li>
+                    </ul>
+
+                    <br/>
+                    <br/>
+                    <img src="images/rancherlogo.png" style="border: 0px; float:left;height: 100px; margin-top: 0px" /> Spezielle Docker-Host Distributionen
+                    <br/ <ul>
+                        <li>Core-OS</li>
+                        <li>Rancher-OS</li>
+                        </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Windows Container</h2>
+                </section>
+                <section>
+                    <ul>
+                        <li>Partnerschaft zwischen Microsoft und Docker seit 2014</li>
+                        <li>Container-Technik enthalten in
+                            <ul>
+                                <li>Windows Server 2016</li>
+                                <li>Windows 10 Professional / Enterprise (ab Anniversary Update)</li>
+                            </ul>
+                        </li>
+                        <li>Unterstützung des kompletten Ökosystems (Hub / Compose / Swarm)</li>
+                        <li>Docker-Integration Visual Studio 2017</li>
+                        <li>Azure Container Services</li>
+                        <li>SQL-Server als Linux-Container</li>
+                        <li>LCOW (Linux Container on Windows)</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Isolation</h3>
+                    Windows Container vs. Hyper-V Container
+                    <br />
+                    <img src="images/schema_win_docker.svg" alt="schema virtual maschine" style="border:0;">
+                    <img src="images/schema_hyperv_docker.svg" alt="schema docker" style="border:0;">
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker - Grundlagen</h2>
+                </section>
+                <section>
+                    <h3>Informationen</h3>
+                    <h4>Docker-Host&nbsp;
+                        <a href="https://docs.docker.com/engine/reference/commandline/info/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker info [OPTIONS]</code></pre> Zeigt Informationen über die Docker-Installation und
+                    <br />den Host (OS / CPU / RAM ...).
+                    <br />
+                    <br />
+                    <h4>Container&nbsp;
+                        <a href="https://docs.docker.com/engine/reference/commandline/ps/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker ps [OPTIONS] </code></pre> Zeigt Informationen für die Container z.B. Name, Image, Port ... an.
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-a / --all</th>
+                                    <td>zeigt Informationen zu allen, auch inaktiven, Containern</td>
+                            </tr>
+                            <tr>
+                                <td>-l / --latest</th>
+                                    <td>zeigt Informationen zum letzten erstellten Container</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h3>Container-Operationen</h3>
+                    <h4>Erstellung&nbsp;
+                        <a href="https://docs.docker.com/engine/reference/run/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker run [OPTIONS] IMAGE[:Tag] [COMMAND]</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <td>--name [Name] (muss eindeutig im Host sein)</td>
+                            </tr>
+                            <tr>
+                                <th>Startverhalten</th>
+                                <td>-it (interaktives Terminal) /-d (Hintergrunddienst)</td>
+                            </tr>
+                            <tr>
+                                <th>Volumen-Mapping</th>
+                                <td>-v Quellpfad:Zielpfad</td>
+                            </tr>
+                            <tr>
+                                <th>Port-Mapping</th>
+                                <td>-p Container-Port:Host-Port</td>
+                            </tr>
+                            <tr>
+                                <th>Endverhalten</th>
+                                <td>-rm Container direkt entfernen</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    Die Angabe des Containers erfolgt per Name oder Hash.
+                    <h4>Starten
+                        <a href="https://docs.docker.com/engine/reference/commandline/start/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker start [OPTIONS] CONTAINER</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-a / --attach</td>
+                                <td>Verbindung mit der Standardausgabe herstellen.</td>
+                            </tr>
+                            <tr>
+                                <td>-i / --interactive</td>
+                                <td>Verbindung mit der Standardeingabe herstellen.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <h4>Stoppen
+                        <a href="https://docs.docker.com/engine/reference/commandline/stop/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker stop [OPTIONS] CONTAINER</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-t / --time</td>
+                                <td>Zeit, in Sekunden, bis Container gekillt wird.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h4>Verbindung herstellen
+                        <a href="https://docs.docker.com/engine/reference/commandline/attach/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker attach [OPTIONS] CONTAINER</code></pre> Stellt eine Verbindung mit der Standardausgabe des laufenden Containers her.
+                    <br />
+                    <br />
+                    <h4>Löschen
+                        <a href="https://docs.docker.com/engine/reference/commandline/rm/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker rm [OPTIONS] CONTAINER</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-f / --force</td>
+                                <td>Bricht den noch laufenden Container ab</td>
+                            </tr>
+                            <tr>
+                                <td>-v / --volumes</td>
+                                <td>Löscht die mit dem Container verbundenen Volumes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <h4>Log-Meldung anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/logs/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker logs [OPTIONS] CONTAINER</code></pre>
+                </section>
+                <section>
+                    <h3>Image-Operationen </h3>
+                    <h4>Anzeige
+                        <a href="https://docs.docker.com/engine/reference/commandline/images/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker images [OPTIONS]</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-a / --all</td>
+                                <td>Zeigt alle, auch Zwischencontainer, an</td>
+                            </tr>
+                            <tr>
+                                <td>-f / --filter</th>
+                                    <td>Filtert die Liste</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <h4>Herunterladen / Aktualisieren
+                        <a href="https://docs.docker.com/engine/reference/commandline/pull/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker pull [OPTIONS] [Registry]IMAGENAME</code></pre> Ist keine Registry angegeben, wird der Default i.d.R. Docker-Hub verwendet. Beim Aktualisieren bleibt
+                    das vorhandene Image erhalten.
+                    <pre><code class="docker">docker pull  myregistry.local:5000/myuser/myimage</code></pre>
+                    <br />
+                </section>
+                <section>
+                    <h4>Löschen
+                        <a href="https://docs.docker.com/engine/reference/commandline/rmi/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker rmi [OPTIONS] </code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-f / --force</td>
+                                <td>Erzwingt das Löschen</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>Erstellung aus Container
+                        <a href="https://docs.docker.com/engine/reference/commandline/commit/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-a / --author</td>
+                                <td>Ersteller</td>
+                            </tr>
+                            <tr>
+                                <td>-m / --message</th>
+                                    <td>Commit message</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>Übertragung zur Registry
+                        <a href="https://docs.docker.com/engine/reference/commandline/push/" class="infolink" target="_blank"></a>
+                    </h4>
+                    <pre><code class="docker">docker push [OPTIONS] [Registry]IMAGENAME[:TAG] </code></pre> Vor der Übertragung in den Dockerhub ist eine Authentifizierung erforderlich.
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker-File</h2>
+                    <p class="fragment">
+                        Ist eine Auszeichnungssprache (ML) für den Aufbau eines Docker-Images.
+                        <br /> Die Speicherung erfolgt als Textdatei.
+                    </p>
+                </section>
+                <section>
+                    <p style="text-align: left">
+                        FROM
+                        <i>Basisimage[:TAG]</i>
+                        <br /> &nbsp;&nbsp; Imagename ggf. mit Tag auf welchem das eigene Image basieren soll
+                    </p>
+                    <pre><code class="docker">FROM ubuntu:16.10</code></pre>
+                    <p style="text-align: left">
+                        LABEL maintainer
+                        <i>Email</i>
+                        <br /> &nbsp;&nbsp; E-Mail-Adresse des Autors
+                    </p>
+                    <pre><code class="docker">LABEL maintainer "max@mustermann.de"</code></pre>
+                    <p style="text-align: left">&nbsp;&nbsp; Veraltet: MAINTAINER</p>
+                    <pre><code class="docker">MAINTAINER Max Mustermann "max@mustermann.de"</code></pre>
+                    <p style="text-align: left">
+                        RUN
+                        <i>COMMAND </i>
+                        <br /> &nbsp;&nbsp; Befehl zur Ausführung im Container z.B. Installieren von Software.
+                    </p>
+                    <pre><code class="docker">RUN apt-get update</code></pre>
+                </section>
+                <section>
+                    <p style="text-align: left">
+                        ENV
+                        <i>VARIABLENNAME Wert</i>
+                        <br /> &nbsp;&nbsp; Definiert Variablen z.B. die Version oder das Datum der Aktualisierung, die auch innerhalb
+                        der Befehle verwendet werden können.
+                    </p>
+                    <pre><code class="docker">ENV REFRESHED_AT 2017-01-25</code></pre>
+                    <p style="text-align: left">
+                        EXPOSE
+                        <i>Portnummer</i>
+                        <br /> &nbsp;&nbsp; Definiert Ports, welche durch das Image bereitgestellt werden.
+                    </p>
+                    <pre><code class="docker">EXPOSE 8080</code></pre>
+                    <p style="text-align: left">
+                        VOLUME
+                        <i>Pfad</i>
+                        <br /> &nbsp;&nbsp; Definiert Volume (Verzeichnis), welche durch das Image bereitgestellt wird.
+                    </p>
+                    <pre><code class="docker">VOLUME ["/mydata"]</code></pre>
+                </section>
+                <section>
+                    <p style="text-align: left">
+                        COPY
+                        <i>Quellpfad</i>
+                        <i>Zielpfad</i>
+                        <br /> &nbsp;&nbsp; Kopiert Ordner / Dateien in das Image
+                    </p>
+                    <pre><code class="docker">COPY /Publish /MyApp</i></code></pre>
+                    <p style="text-align: left">
+                        ADD
+                        <i>Quellpfad / URL</i>
+                        <i>Zielpfad</i>
+                        <br /> &nbsp;&nbsp; Kopiert Ordner / Dateien in das Image.
+                        <br/> &nbsp;&nbsp; Kann auch eine URL oder eine tar-Datei sein.
+                    </p>
+                    <pre><code class="docker">ADD /Publish /MyApp</i></code></pre>
+                    <p style="text-align: left">
+                        WORKDIR
+                        <i>Pfad</i>
+                        <br /> &nbsp;&nbsp; Definiert den Einstiegspfad für die Ausführung innerhalb des Containers.
+                    </p>
+                    <pre><code class="docker">WORKDIR /MyApp</code></pre>
+                </section>
+                <section>
+                    <p style="text-align: left">
+                        ENTRYPOINT
+                        <i>[COMMAND, ARGS]</i>
+                        <br /> &nbsp;&nbsp; Definiert den Startbefehl des Images inkl. Parameter.
+                    </p>
+                    <pre><code class="docker">ENTRYPOINT ["npm", "rum", "testapp"]</code></pre>
+                    <p style="text-align: left">
+                        CMD
+                        <i>COMMAND</i>
+                        <br /> &nbsp;&nbsp; Definiert den Startbefehl des Images inkl. Parameter.
+                        <br/> &nbsp;&nbsp; Ein Überschreiben ist möglich.
+                    </p>
+                    <pre><code class="docker">CMD ["npm", "rum", "testapp"]</code></pre>
+                </section>
+                <section>
+                    <h3>Beispiel</h3>
+                    <pre><code class="docker">FROM mysample:core-base
+LABEL maintainer "frank@pommerening-online.de"
+ENV REFRESHED_AT 2018-04-08
+ENV Picflow_VERSION 0.0.1
+    
+COPY /app /home/
+    
+RUN set -x \
+    && p7zip -d /home/picflow-webapp.7z \
+    && mv /picflow-webapp/ /app/ \
+    && apt-get purge -y --auto-remove ca-certificates wget p7zip
+    
+WORKDIR /app/
+EXPOSE 5000
+ENTRYPOINT ["dotnet", "WebApp.dll"]</code></pre>
+                </section>
+                <section>
+                    <h3>Empfehlungen
+                        <a href="https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/" class="infolink" target="_blank"></a>
+                    </h3>
+                    <ul>
+                        <li>Installiere nur notwendige Pakete</li>
+                        <li>Jeder Container hat nur einen Zweck</li>
+                        <li>Minimiere die Anzahl der Ebenen</li>
+                        <li>Sortiere Argumente</li>
+                        <li>Nutze .dockerignore - File</li>
+                        <li>apt-get update / apt-get install immer in einem Befehl</li>
+                        <li>Verwende Pipes</li>
+                    </ul>
+                    <br/>
+                    <br/>
+                    <p class="fragment">Hauptziele: Übersicht erhöhen / Imagegröße reduzieren</p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Build .Net Core App</h2>
+                    <img src="images/DockerDotNET.jpg" alt="Logo .net and docker" / style="border: 0; height: 500px">
+                </section>
+                <section>
+                    <h3>Build inside</h3>
+                    Die Anwendung wird im Container während der Imageerstellung gebaut.
+                    <br />
+                    <br />
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Vorteile</th>
+                                <th>Nachteile</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li>Buildserver nicht erforderlich</li>
+                                        <li>Weniger komplex</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Quellcode und Buildabhängigkeiten ggf. im Image enthalten</li>
+                                        <li>Basisimage größer (SDK erforderlich)</li>
+                                        <li>i.d.R. entstehen größere Images</li>
+                                        <li>Buildfehler schwerer zu debuggen</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h3>Build outside</h3>
+                    Die Anwendung wird unabhängig vom Container erstellt. Die entstandenen Artefakte werden bei der Imageerstellung kopiert.
+                    <br />
+                    <br />
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Vorteile</th>
+                                <th>Nachteile</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li>i.d.R. kleinere Images und Basisimages</li>
+                                        <li>Build unabhängig von der Imageestellung</li>
+                                        <li>Quellcode und Buildabhängigkeiten nicht enthalten</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Infrastruktur für Build erforderlich</li>
+                                        <li>Trennung erzeugt Komplexität</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h3>Multi-Stage Build</h3>
+                    Die Anwendung wird während der Imageerstellung in einem temporären Container gebaut. Die entstandenen Artefakte werden in
+                    den finalen Container kopiert.
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Vorteile</th>
+                                <th>Nachteile</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li>i.d.R. kleinere Images und Basisimages</li>
+                                        <li>Buildserver nicht erforderlich</li>
+                                        <li>Quellcode und Buildabhängigkeiten nicht enthalten</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>komplexere Dockerfiles</li>
+                                        <li>Mehrere Quellimages (SDK / Runtime) erforderlich</li>
+                                        <li>Buildfehler schwerer zu debuggen</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Networking</h2>
+                </section>
+                <section>
+                    <h3>Legacy container links</h3>
+                    <pre>
+                                <code data-trim contenteditable>
+                                    $ docker run -d --name mongodb mongo
+                                    $ docker run -d --name apache link data:mongodb webapp
+                                </code>
+                            </pre>
+                    <p class="fragment">
+                        <span style="color: red">VERALTET</span>
+                        <br /> Das Networking löst das Konzept der Links zwischen Containern ab!
+                    </p>
+                </section>
+                <section>
+                    Nach der Docker-Installation stehen die folgenden Netzwerke zur Verfügung
+                    <br />
+                    <ul>
+                        <li>none (null)</li>
+                        <li>host (host)</li>
+                        <li>bridge (bridge)</li>
+                    </ul>
+                    <br />
+                    <br /> Neue Container (außer Swarm / Compose) werden, soweit nicht anders definiert, dem Netzwerk bridge zugeordnet.
+                </section>
+                <section>
+                    <h3>Netzwerktreiber (Driver)</h3>
+                    <ul>
+                        <li>null: kein Netzwerk</li>
+                        <li>host: nur Verbindungen zwischen Containern und dem Host.</li>
+                        <li>bright: Container wird Teil des physischen Netzwerks des Hosts. Er kann von außen erreicht werden.</li>
+                        <li>overlay: Hostüberspannendes Netzwerk z.B. für Swarm</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Netzwerk anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/network_ls/" target="_target" class="infolink"></a>
+                    </h3>
+                    <pre><code class="docker">docker network ls [OPTIONS]</code></pre>
+                    <br />
+                    <h3>Netzwerkdetails anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/network_inspect/" target="_target" class="infolink"></a>
+                    </h3>
+                    <pre><code class="docker">docker network inspect [OPTIONS] NETWORK</code></pre>
+                </section>
+                <section>
+                    <h3>Netzwerk erstellen</h3>
+                    <pre><code class="docker">docker network create [OPTIONS] NETWORK</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 150px">-d/--drive</td>
+                                <td>Netzwerktreiber (none, host, bridge ...)</td>
+                            </tr>
+                            <tr>
+                                <td>--subnet</td>
+                                <td>Subnetz z.B. 192.168.235.0/24</td>
+                            </tr>
+                            <tr>
+                                <td>--ip-range</td>
+                                <td>Definiert den zu vergebenden IP Bereich</td>
+                            </tr>
+                            <tr>
+                                <td>-o/-opt </td>
+                                <td>Key / Value - Eintrag für spezielle Einstellung z.B. com.docker.network.driver.mtu": "1500"</td>
+                            </tr>
+                            <tr>
+                                <td>--label</td>
+                                <td>Metadaten für das Netzwerk</td>
+                            </tr>
+                            <tr>
+                                <td>--ipv6</td>
+                                <td>aktiviert / deaktiviert IPv6</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker-Compose</h2>
+                    <img src="images/composelogo.png" style="width: 300px;border: 0" />
+                    <p class="fragment">Zusammenfassung mehrerer Container zu einem Anwendungsstack</p>
+                </section>
+                <section>
+                    <h3>Compose-File</h3>
+                    Eine yaml bzw. yml - Datei, welche die Struktur und Konfiguration des Anwendungsstacks definiert. Standard: docker-compose.yml
+                    <br /> Versionen / Formate: Ohne Angabe im Header gilt Version 1!
+                    <a href="https://docs.docker.com/compose/compose-file/compose-versioning/" target="_blank" class="infolink"></a>
+                    <br />
+
+                </section>
+                <section>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Format / Version</th>
+                                <th>Docker-Version</th>
+                                <th>Hinweise</th>
+                            </tr>
+                            <tr>
+                                <td>3.5</td>
+                                <td>17.12.0+</td>
+                                <td>Isolation</td>
+                            </tr>
+                            <tr>
+                                <td>3.3</td>
+                                <td>17.06.0+</td>
+                                <td>Config / Secrets</td>
+                            </tr>
+                            <tr>
+                                <td>3.0
+                                    <br/> 3.1
+                                    <br/>3.2</td>
+                                <td>1.13.0+
+                                    <br/>1.13.1+
+                                    <br/>17.04.0+</td>
+                                <td>Empfohlene Version
+                                    <br />Erlaubt Verknüpfung mit Docker Swarm</td>
+                            </tr>
+                            <tr>
+                                <td>2.1</td>
+                                <td>1.12.0+</td>
+                                <td>Healthcheck</td>
+                            </tr>
+                            <tr>
+                                <td>2.0</td>
+                                <td>1.10.0+</td>
+                                <td>Networks, Dependency</td>
+                            </tr>
+                            <tr>
+                                <td>1.0</td>
+                                <td>1.9.1+</td>
+                                <td>in zukünftiger Version deprecated / veraltet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h3>Service-Definition</h3>
+                    Jeder Container des Anwendungsstacks ist ein Service. Deren Eigenschaften wie Name, Abhängigkeiten etc. werden im Bereich
+                    services beschrieben.
+                    <br />
+
+                    <p style="text-align: left">
+                        <b>Herkunft Images</b>
+                        <br/> BUILD
+                        <br /> &nbsp;&nbsp;Image wird erst während des Starts erstellt.
+                    </p>
+                    <pre><code class="yaml">build:
+    context: ./webapp
+    dockerfile: Dockerfile.local
+    image: webbapp:latest</code></pre>
+                    <p style="text-align: left">
+                        Vorhandenes Image
+                        <br /> &nbsp;&nbsp;gleiches Format wie beim FROM-Klausel des Dockerfile
+                    </p>
+                    <pre><code class="yaml">image: user/web:latest</code></pre>
+                </section>
+                <section>
+                    <p style="text-align: left">
+                        Portfreigaben
+                        <br /> &nbsp;&nbsp; Port-Container:Port-Host
+                    </p>
+                    <pre><code class="yaml">ports:
+    - 5000:5000</code></pre>
+                    <p style="text-align: left">Hostname</p>
+                    <pre><code class="yaml">hostname:Webserver1</code></pre>
+                    <p style="text-align: left">Abhängigkeiten
+                        <br /> &nbsp;&nbsp;Es werden die (Alias)name der Services verwendet.
+                        <pre><code class="yaml">depends_on:
+    - dbserver</code></pre>
+                </section>
+                <section>
+                    <p style="text-align: left">Umgebungsvariable / Einstellungen
+                        <br /> &nbsp;&nbsp;Format: KEY:VALUE</p>
+                    <pre><code class="yaml">environment:
+    - setting1:value1
+    - setting2:value2</code></pre>
+                    <p style="text-align: left">Datenspeicher
+                        <br /> &nbsp;&nbsp;Datenspeicher werden zusätzlich im Bereich volumes definiert.</p>
+                    <pre><code class="yaml">volumes:
+    - data1:/app/data</code></pre>
+                    <p style="text-align: left">Netzwerkzuordnung
+                        <br /> &nbsp;&nbsp;Netzwerke werden zusätzlich im Bereich networks definiert.</p>
+                    <pre><code class="yaml">networks:
+    - frontend</code></pre>
+                </section>
+                <section>
+                    <h3>Netzwerk-Definition
+                        <a href="https://docs.docker.com/compose/networking/" target="_blank" class="infolink"></a>
+                    </h3>
+                    Die Definition der Netzwerke erfolgt innerhalb des Bereichs networks.
+                    <br/>
+                    <p style="text-align: left">Treiber
+                        <br /> &nbsp;&nbsp;z.B. bridge oder overlay</p>
+                    <pre><code class="yaml">driver: overlay</code></pre>
+                    <p style="text-align: left">Optionen
+                        <pre><code class="yaml">driver_opts:
+    - opt1: "val1"</code></pre>
+                </section>
+                <section>
+                    <h3>Datenspeicher-Definition</h3>
+                    Die Definition der Datenspeicher erfolgt innerhalb des Bereichs volumes. Sie orientiert sich an der Volume-Defintion
+                    <a href="https://docs.docker.com/engine/reference/commandline/volume_create/" target="_blank" class="infolink"></a>.
+                    <br/>
+                </section>
+                <section>
+                    <h4>Beispiel</h4>
+                    <pre><code class="yaml">version: "3"
+    services:
+        database:
+            image: mongodb:3.2
+            volumes:
+                - data:/var/mongo/data
+            networks:
+                - backend
+        webapp:
+            build:
+                context: ./webapp
+            ports: 5000:80
+            environment:
+                - DbConnectingString=mongodb://database
+            networks:
+                - backend
+                - frontend
+    networks:
+        backend:
+        frontend:
+    volumes:
+        data:</code></pre>
+                </section>
+                <section>
+                    <h3>Anwendungsstack-Operationen
+                        <a href="https://docs.docker.com/compose/reference/" target="_blank" class="infolink"></a>
+                    </h3>
+                    <pre><code class="docker">docker-compose [SUBCOMMAND] [OPTIONS] </code></pre>
+                    <br />
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Subbefehl</th>
+                                <th>Optionen</th>
+                                <th>Hinweise</th>
+                            </tr>
+                            <tr>
+                                <td>pull</td>
+                                <td></td>
+                                <td>Lädt die im Anwendungsstack enthalten Images herunter</td>
+                            </tr>
+                            <tr>
+                                <td>create</td>
+                                <td>--no-cache [SERVICE...]</td>
+                                <td>Erstellt das Image bzw. den alle Images des Stack</td>
+                            </tr>
+                            <tr>
+                                <td>up</td>
+                                <td>-d [SERVICE]
+                                    <br />--build</td>
+                                <td>Erstellt / Lädt herunter / Startet einen Service inkl. Abhängigkeiten oder den gesamten Stack</td>
+                            </tr>
+                            <tr>
+                                <td>start</td>
+                                <td>[SERVICE]</td>
+                                <td>Startet einen Service</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </section>
+                <section>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Subbefehl</th>
+                                <th>Optionen</th>
+                                <th>Hinweise</th>
+                            </tr>
+                            <tr>
+                                <td>stop </td>
+                                <td>-t (timeout in s) [SERVICE]</td>
+                                <td>Beendet einen Service</td>
+                            </tr>
+                            <tr>
+                                <td>down</td>
+                                <td>--rmi / -v</td>
+                                <td>Stoppt und entfernt Container, Netzwerke, images und Volumes</td>
+                            </tr>
+                            <tr>
+                                <td>rm</td>
+                                <td>-v</td>
+                                <td>Entfernt, nach Bestätigung, gestoppte Container und ggf. Volumes</td>
+                            </tr>
+                            <tr>
+                                <td>exec</td>
+                                <td>SERVICE COMMAND</td>
+                                <td>Führt den übergeben Befehl im Service aus</td>
+                            </tr>
+                            <tr>
+                                <td>top</td>
+                                <td>[SERVICE]</td>
+                                <td>Zeigt die Prozesse des Service bzw. des Anwendungsstack an</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker Swarm / Docker Swarm Mode</h2>
+                    <img src="images/swarmlogo.jpg" style="width: 300px;border: 0" />
+                    <p class="fragment">Container-Cluster über mehrere Docker-Hosts</p>
+                </section>
+                <section>
+                    <h3>Docker Swarm Visualizer</h3>
+                    <p style="text-align: left">
+                        Das Tool Docker Swarm Visualizer gestattet eine Übersicht der laufenden Services und Hosts.
+                        <img src="images/visualizer.png" style="border: 0;height: 350px;float:right">
+                        <br />
+                        <br /> Lizenz: Apache
+                        <a href="https://github.com/dockersamples/docker-swarm-visualizer" target="_blank">GitHub</a>
+                        <br />
+                        <br /> Verfügbare Container:
+                        <br />
+                        <ul>
+                            <li>Linux x64:
+                                <a href="https://hub.docker.com/r/dockersamples/visualizer/" target="_blank">dockersamples/visualizer</a>
+                            </li>
+                            <li>Linux arm:
+                                <a href="https://hub.docker.com/r/alexellis2/visualizer-arm/" target="_blank">alexellis2/visualizer-arm</a>
+                            </li>
+                            <li>Windows:
+                                <a href="https://hub.docker.com/r/stefanscherer/visualizer-windows/" target="_blank">stefanscherer/visualizer-windows</a>
+                            </li>
+                        </ul>
+                    </p>
+                </section>
+                <section>
+                    <h3>Docker Swarm
+                        <a href="https://docs.docker.com/engine/reference/commandline/swarm/" target="_blank" class="infolink"></a>
+                    </h3>
+                    <h4>Cluster / Swarm initalisieren</h4>
+                    <pre><code class="docker">docker swarm init [OPTIONS] </code></pre>
+                    <p style="text-align: left">
+                        Nach erfolgreicher Erstellung werden der Token und Befehl zum Hinzufügen angezeigt.
+                    </p>
+                    <h4>Knoten hinzufügen</h4>
+                    <pre><code class="docker">docker swarm join [OPTIONS] HOST:PORT</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>-- token TOKEN</td>
+                                <td>Zugriffstoken zur Authentifizierung beim Manager</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h4>Knoten entfernen</h4>
+                    <pre><code class="docker">docker swarm leave [OPTIONS]</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>--force / -f</td>
+                                <td>Erzwingt das Verlassung und ignoriert Warnungen
+                                    <br/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    WICHTIG: die Node muss noch mein Manager abgemeldet werden!
+                    <br/>
+                    <br/>
+                    <h4>Zugriffstoken anzeigen</h4>
+                    <pre><code class="docker">docker swarm join-token [OPTIONS] (worker|manager)</code></pre>
+                    <h4>Cluster / Swarm aktualsieren</h4>
+                    <pre><code class="docker">docker swarm Update [OPTIONS]</code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker Service</h2>
+                    <img src="images/swarmlogo.jpg" style="width: 300px;border: 0" />
+                </section>
+                <section>
+                    Anwendungen die Cluster bereitgestellt werden, werden als Services bezeichnet. Um den Service auf mehreren Nodes bereitzustellen,
+                    muss das Image in einer Registry abgelegt sein.
+                </section>
+                <section>
+
+                    <h4>Service erstellen
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_create/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service create [OPTIONS] IMAGE [COMMAND] [ARG...]</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>--name</td>
+                                <td>Name für den Service</td>
+                            </tr>
+                            <tr>
+                                <td>--network</td>
+                                <td>Verwendetes Netzwerk</td>
+                            </tr>
+                            <tr>
+                                <td>--publish, -p</td>
+                                <td>Veröffentlicht den Port</td>
+                            </tr>
+                            <tr>
+                                <td>--replicas</td>
+                                <td>Zahl der gleichzeitig laufenden Instanzen</td>
+                            </tr>
+                            <tr>
+                                <td>--config</td>
+                                <td>Zuordnung einer Konfiguration (API 1.3+)</td>
+                            </tr>
+                            <tr>
+                                <td>--secret</td>
+                                <td>Zuordnung von Zugangsdaten (API 1.25+)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h4>Services entfernen
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_rm/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service rm SERVICE</code></pre>
+                    <h4>Services anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_ls/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service ls [OPTIONS] </code></pre>
+                    <h4>Details zu / zum Services anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_inspect/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service inspect [OPTIONS] SERVICE</code></pre>
+                    <h4>Services hoch/runter skalieren
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_scale/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service scale SERVICE=ANZAHL</code></pre>
+                    <h4>Logs eines Services anzeinge
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_logs/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service logs [OPTIONS] SERVICE</code></pre>
+                </section>
+                <section>
+                    <h4>Service aktualisieren API 1.24+
+                        <a href="https://docs.docker.com/engine/reference/commandline/service_update/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker service update [OPTIONS] SERVICE</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>--config-[add][rm]</td>
+                                <td>1.30+</td>
+                                <td>Konfiguration ergänzen / entfernen</td>
+                            </tr>
+                            <tr>
+                                <td>--network-[add][rm]</td>
+                                <td>1.29+</td>
+                                <td>Netzwerk ergänzen / entfernen</td>
+                            </tr>
+                            <tr>
+                                <td>--secret-[add][rm]</td>
+                                <td>1.25+</td>
+                                <td>Zugangsdaten ergänzen / entfernen</td>
+                            </tr>
+                            <tr>
+                                <td>--publish-[add][rm]</td>
+                                <td></td>
+                                <td>Veröffentlichtung ergänzen / entfernen</td>
+                            </tr>
+                            <tr>
+                                <td>--env-[add][rm]</td>
+                                <td></td>
+                                <td>Variable ergänzen / entfernen</td>
+                            </tr>
+                            <tr>
+                                <td>--limit-cpu / --limit-memory</td>
+                                <td></td>
+                                <td>Ressourcen ändern</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker Stack</h2>
+                    <img src="images/composelogo.png" style="width: 300px;border: 0" />
+                    <p class="fragment">Zusammenfassung mehrerer Container zu einem Anwendungsstack</p>
+                </section>
+                <section>
+                    <h3>Stack / Compose-File
+                        <a href="https://docs.docker.com/compose/compose-file/compose-versioning/" target="_blank" class="infolink"></a>
+                    </h3>
+                    Eine yaml bzw. yml - Datei, welche die Struktur und Konfiguration des Anwendungsstacks definiert.
+                    <br />
+                    <br /> Standard: docker-compose.yml
+                    <br />
+                    <br /> Versionen / Formate: Ohne Angabe im Header gilt Version 1!
+
+                </section>
+                <section>
+                    <h3>Verteilte Anwendungsstack-Operationen</a>
+                    </h3>
+                    <h4>Stack bereitstellen / aktualisieren
+                        <a href="https://docs.docker.com/engine/reference/commandline/stack_deploy/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker stack deploy [OPTIONS] STACK</code></pre>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>--compose-file, -c</td>
+                                <td>Compose-File (API 1.25+)</td>
+                            </tr>
+                            <tr>
+                                <td>--resolve-image</td>
+                                <td>Fragt das Image von der Registry ab (API 1.30+)</td>
+                            </tr>
+                            <tr>
+                                <td>--prune</td>
+                                <td>Entfernt nicht mehr verwendete Services (API 1.27)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h4>Stack entfernen
+                        <a href="https://docs.docker.com/engine/reference/commandline/stack_rm/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker stack rm STACK</code></pre>
+                    <h4>Stacks anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/stack_ls/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker stack ls [OPTIONS]</code></pre>
+                    <h4>Services eines Stack anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/stack_services/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker stack services [OPTIONS] STACK</code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Docker Config / Docker Secret</h2>
+                    <p class="fragment">Zugangsdaten / Konfiguration nur für verteilte System</p>
+                </section>
+                <section>
+                    <h3>Zugangsdaten verwalten (API 1.25+)</h3>
+                    Wichtig: Inhalt kann per Docker-CLI angezeigt
+                    <b>nicht</b> werden.
+                    <h4>Zugangsdaten anlegen
+                        <a href="https://docs.docker.com/engine/reference/commandline/secret_create/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker secret create [OPTIONS] SECRET [file|-]</code></pre>
+                    <h4>Zugangsdaten anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/secret_ls/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker secret ls</code></pre>
+                    <h4>Zugangsdaten Details anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/secret_inspect/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker secret inspect [OPTIONS] SECRET</code></pre>
+                    <h4>Zugangsdaten löschen
+                        <a href="https://docs.docker.com/engine/reference/commandline/secret_rm/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker secret rm SECRET</code></pre>
+                </section>
+                <section>
+                    <h3>Konfiguration verwalten (API 1.30+)</h3>
+                    Inhalt kann per Docker-CLI angezeigt werden.
+                    <h4>Konfiguration anlegen
+                        <a href="https://docs.docker.com/engine/reference/commandline/config_create/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker config create [OPTIONS] CONFIG [file|-]</code></pre>
+                    <h4>Konfiguration anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/config_ls/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker config ls</code></pre>
+                    <h4>Konfiguration Details anzeigen
+                        <a href="https://docs.docker.com/engine/reference/commandline/config_inspect/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker config inspect [OPTIONS] CONFIG</code></pre>
+                    <h4>Konfiguration löschen
+                        <a href="https://docs.docker.com/engine/reference/commandline/config_rm/" target="_blank" class="infolink"></a>
+                    </h4>
+                    <pre><code class="docker">docker config rm CONFIG</code></pre>
+                </section>
+            </section>
         </div>
     </div>
     <script src="./common/lib/js/head.min.js"></script>
