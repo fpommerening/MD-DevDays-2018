@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>Microservices mit RabbitMQ  Deep Dive</title>
+<title>Microservices mit RabbitMQ Deep Dive</title>
 
 <meta name="description" content="Microservices mit RabbitMQ  Deep Dive - Magdeburger Developer Days">
 <meta name="author" content="Frank Pommerening">
@@ -27,8 +27,245 @@
 <body>
     <div class="reveal">
         <div class="slides">
+            <section>
+                <h1>Deep Dive: Microservices mit RabbitMQ</h1>
+                <h2>Magdeburger Developer Days 2018</h2>
+                <h3>11.04.2018</h3>
+            </section>
+            <section>
+                <section>
+                    <h2>Frank Pommerening</h2>
+                    <img src="images/fp.jpg" style="border:0px;width:175px">
+                    <ul>
+                        <li>Senior - Softwareentwickler</li>
+                        <li>Consultant</li>
+                        <li>Softwarearchitekt</li>
+                    </ul>
+                    <br />
+                    <br />
+                    <a href="mailto:frank@pommerening-online.de">frank@pommerening-online.de</a>
+                </section>
+                <section data-background="images/axp.svg">
+                    AXP Consulting GmbH & Co. KG in Leipzig
+                    <br/> Gründung: Mai 2012
+                    <br /> Anzahl Mitarbeiter: 8 feste
+                    <br/> Branchenfokus: Energiebranche
+                    <br/>
+                    <br/>
+                    <br/>
+                    <ul>
 
-            
+                        <li>Consulting (fachlich & IT)
+                            <ul>
+                                <li>Requirements Engineering / Projektmanagement </li>
+                                <li>IT-Fachprozess-Analyse / Dokumentation</li>
+                            </ul>
+                        </li>
+                        <li>Software-Entwicklung
+                            <ul>
+                                <li>Microservices, SOA, REST, OOA und OOD</li>
+                                <li>Microsoft Technologien z.B. .NET (C#), WPF, WCF</li>
+                                <li>Datenbanken (MS SQL Server / Oracle / MongoDB)
+                            </ul>
+                            </li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <h2>Microservices ?!</h2>
+                <img src="images/Prozesskette_gesamt.svg" style="border:0px;width:900px" alt="Übersicht für Beispiel Prozessketten">
+            </section>
+            <section>
+                <section>
+                    <h2>RabbitMQ im Cluster</h2>
+                    <img src="images/logo_rabbitmq.png" style="border:0px" alt="Logo of Rabbit MQ" />
+                </section>
+                <section>
+                    <h3>Voraussetzungen</h3>
+                    Damit die verschiedenen Nodes verknüpft werden können, müssen sie das gleiche ERLANG COOKIE besitzen.
+                </section>
+                <section>
+                    <h3>Beispiel mit Docker</h3>
+                    Hinweis: Sicherheit und eventuelle Firewallanpassung werden außer Acht gelassen.
+                </section>
+                <section>
+                    Netzwerk definieren
+                    <pre><code data-trim contenteditable>
+            $ docker network create rmqcluster</code></pre> Start Node1 (Master)
+                    <pre><code data-trim contenteditable>
+            $ docker run -d --hostname rmqNode1 --name rmqNode1 --network=rmqcluster -p 5672:5672 
+               -p 15672:15672 -e RABBITMQ_ERLANG_COOKIE='strenggeheim' rabbitmq:3-management</code></pre> Start Node2 (Node mit Persistenz)
+                    <pre><code data-trim contenteditable>
+            $ docker run -d --hostname rmqNode2 --name rmqNode2 --network=rmqcluster -p 5673:5672 
+               -p 15673:15672 -e RABBITMQ_ERLANG_COOKIE='strenggeheim' rabbitmq:3-management</code></pre>
+                </section>
+                <section>
+                    Start Node3 (RAM Node)
+                    <pre><code data-trim contenteditable>
+            $ docker run -d --hostname rmqNode3 --name rmqNode3 --network=rmqcluster -p 5674:5672
+              -p 15674:15672 -e RABBITMQ_ERLANG_COOKIE='strenggeheim' rabbitmq:3-management</code></pre> Container zur Konfiguration
+                    <pre><code data-trim contenteditable>
+            $ docker run -it --rm --network=rmqcluster -e RABBITMQ_ERLANG_COOKIE='strenggeheim'
+                rabbitmq:3 /bin/bash</code></pre>
+                </section>
+                <section>
+                    Hinzufügen Node 2
+                    <pre><code data-trim contenteditable>
+            rabbitmqctl -n rabbit@rmqNode2 stop_app
+            rabbitmqctl -n rabbit@rmqNode2 join_cluster rabbit@rmqNode1
+            rabbitmqctl -n rabbit@rmqNode2 start_app</code></pre> Hinzufügen Node 3
+                    <pre><code data-trim contenteditable>
+            rabbitmqctl -n rabbit@rmqNode3 stop_app
+            rabbitmqctl -n rabbit@rmqNode3 join_cluster --ram rabbit@rmqNode1
+            rabbitmqctl -n rabbit@rmqNode3 start_app</code></pre>
+                </section>
+                <section>
+                    <h3>Aktivierung der Hochverfügbarkeit</h3>
+                    <a href="https://www.rabbitmq.com/ha.html" target="_blank">Info</a>
+                    <pre><code data-trim contenteditable>
+                                     rabbitmqctl -n rabbit@rmqNode1 set_policy ha-all "" '{"ha-mode":"all"}' 
+                                     </code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>EasyNetQ im Cluster</h2>
+                </section>
+                <section>
+
+                    <h3>Cluster mit TCP-Loadbalancer</h3>
+                    Loadbalancer entscheidet über Verteilung und ist für den Client transparent.
+                    <pre><code class="cs">var myBus = RabbitHutch.CreateBus("host=IP-LoadBalancer");</code></pre>
+                    <h3>Cluster mit re-try loop</h3>
+                    EasyNetQ versucht nach einem Verbindungsproblem den nächsten Host zu finden. Ist kein Host verfügbar, werden alle 5 Sekunden
+                    alle Hosts geprüft.
+                    <pre><code class="cs">var myBus = RabbitHutch.CreateBus("host=host1,host2,host3");</code></pre>
+                </section>
+                <section>
+                    <h2>Cluster-Capture</h2>
+                    <img src="images/ClusterSample.svg" alt="Cluster sample" style="border:0px;width:700px">
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>TLS RabbitMQ mit SSL / TLS</h2>
+                    <img src="images/logo_rabbitmq.png" style="border:0px" alt="Logo of Rabbit MQ" />
+                </section>
+                <section>
+                    <h2>IoT App</h2>
+                    <img src="images/IoTApp.svg" alt="IoT App" style="border:0px;width:800px">
+                </section>
+                <section>
+                    Start Cert-Store
+                    <pre><code data-trim contenteditable>$ docker run --name certstore 
+    fpommerening/msrmq:ssl-certstore</code></pre> Starten CA
+                    <pre><code data-trim contenteditable>$ docker run -it --rm --volumes-from certstore 
+    fpommerening/msrmq:ssl-ca /bin/bash</code></pre> Zertifikate erstellen
+                    <pre><code data-trim contenteditable>cd /usr/local/bin/
+./ca.sh MyCA
+./server.sh rabbitServer strenggeheim
+./client.sh rabbitClient strenggeheim</code></pre>
+                </section>
+                <section>
+                    Start RabbitMQ mit SSL
+                    <pre><code data-trim contenteditable>$ docker run -d --name rabbitssl --volumes-from certstore 
+    -p 15671:15671 -p 5671:5671 
+    -e RABBITMQ_SSL_CACERTFILE=/rabbitssl/ca/cacert.pem 
+    -e RABBITMQ_SSL_CERTFILE=/rabbitssl/server/cert.pem 
+    -e RABBITMQ_SSL_KEYFILE=/rabbitssl/server/key.pem 
+        rabbitmq:3-management</code></pre> Client - Zertifikate kopieren
+                    <pre><code data-trim contenteditable>$ docker cp certstore:/rabbitssl/client/keycert.p12 .</code></pre>
+                </section>
+                <section>
+                    <h3> EasyNetQ mit SSL</h3>
+                    <pre><code class="cs">var connection = new ConnectionConfiguration();
+connection.Port = 5671;
+connection.UserName = "guest";
+connection.Password = "guest";
+connection.Product = "SSLTest;</code></pre>
+                    <pre><code class="cs">var host1 = new HostConfiguration();
+host1.Host = "localhost";
+host1.Port = 5671;
+host1.Ssl.Enabled = true;
+host1.Ssl.ServerName = "rabbitServer";
+host1.Ssl.CertPath = @"c:\Temp\keycert.p12";
+host1.Ssl.CertPassphrase = "strenggeheim";
+host1.Ssl.AcceptablePolicyErrors =
+        SslPolicyErrors.RemoteCertificateNameMismatch | 
+        SslPolicyErrors.RemoteCertificateChainErrors;
+connection.Hosts = new List< HostConfiguration> { host1 };
+connection.Validate();
+myBus = RabbitHutch.CreateBus(connection, services => { });</code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2> V-HOSTS und Benutzer</h2>
+                </section>
+                <section>
+                    <img src="images/vhost.svg" style="border:0;height:500px;" />
+                </section>
+                <section>
+                    <h3>Benutzer per Management-UI anlegen</h3>
+                    <img src="images/adduser.png" style="border:0;height:500px; float: right" /> Admin -> User -> Add a User
+                    <br />
+                    <br />
+                    <h3>Tags</h3>
+                    Die Tags schalten Funktionen wie den Zugriff auf die Management-UI frei. Die Pflege erfolgt per Links unterhalb der Textbox
+                    - nicht manuell!
+                </section>
+                <section>
+                    <h3>V-Host per Management-UI anlegen</h3>
+                    Admin -> Virtual Hosts -> Add a new virtual host
+                    <img src="images/addvhost.png" style="border:0;height:400px;" />
+                </section>
+                <section>
+                    <h3>V-Host - Benutzer - Zuordnung </h3>
+                    <img src="images/uservhost.png" style="border:0;height:450px;float: right" />
+                    <ol>
+                        <li>Benutzer auswählen</li>
+                        <li>V-Host auswählen</li>
+                        <li>Berechtigungen ggf. einschränken</li>
+                        <li>Bestätigung mit 'Set permission'</li>
+                    </ol>
+                </section>
+                <section>
+                    Verbindung mit V-Host und / oder alternativem Benutzer erfolgt per Connectionstring.
+                    <br />
+                    <br /> V-Host
+                    <br />
+                    <pre><code class="cs">var myBus = RabbitHutch.CreateBus("host=localhost;virtualHost=myHost");</code></pre>
+                    <br /> Benutzer / Passwort
+                    <br />
+                    <pre><code class="cs">var myBus = RabbitHutch.CreateBus("host=localhost;username=myUser;password=myPasswort");</code></pre>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Zeitgesteuertes Queuing</h2>
+                </section>
+                <section>
+                    <h3>EasyNetQ IScheduler</h3>
+                    Die Implementierungen des Interface IScheduler steuern die zeitversetzte Nachrichtenübertragung.
+                    <br />
+                    <br /> Die Auswahl der Implementierung erfolgt per Registrierung.
+                    <pre><code class="cs">var myBus = RabbitHutch.CreateBus("host=localhost",
+       register => register.Register&lt;IScheduler,MongoScheduler.MongoScheduler&gt;());</code></pre>
+                </section>
+                <section>
+                    RabbitMQ Delayed Message Plugin
+                    <br/>
+                    <a href="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/" target="_blank">GitHub</a>
+                    <br /> Starten Docker-Image mit Plugin
+                    <br />
+                    <pre>
+                                <code data-trim contenteditable>$ docker run -d --hostname rmqDelayEx --name rmqDelayEx
+    -p 5672:5672 -p 15672:15672
+    fpommerening/msrmq:rabbitmq-delaymxmgm</code>
+                            </pre> Die IScheduler-Implementierung DelayedExchangeScheduler wird von EasyNetQ mitgeliefert. Delayed Message
+                    Plugin unterstützt keinen Abbruch (Cancelling) von Nachrichten -> NotImplementedException!
+                </section>
+            </section>
         </div>
     </div>
     <script src="./common/lib/js/head.min.js"></script>
