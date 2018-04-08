@@ -12,7 +12,5 @@ services:
             - mongomessage
         depends_on:
             - messagedb
-        environment:
-            - MessageConnectionString=mongodb://messagedb
 networks:
     mongomessage:

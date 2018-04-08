@@ -14,9 +14,5 @@ services:
             - messagedb
         environment:
             - MessageConnectionString=mongodb://messagedb
-        deploy:
-            placement:
-                constraints:
-                    - 'node.platform.os == linux'
 networks:
     mongomessage:

@@ -5,7 +5,3 @@ ENV REFRESHED_AT 2018-04-08
 ENV ASPNETCORE_URLS http://0.0.0.0:5000
 EXPOSE 5000
 
-COPY WebApp /WebApp
-RUN cd /WebApp && dotnet restore && dotnet build
-WORKDIR /WebApp
-ENTRYPOINT ["dotnet", "run"]

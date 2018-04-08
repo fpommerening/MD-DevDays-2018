@@ -10,7 +10,7 @@ namespace FP.MdDevDays2018.MongoMessage
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             
-            container.Register(new MessageRepository(EnvironmentVariable.GetValueOrDefault("MessageConnectionString", "mongodb://localhost")));
+            container.Register(new MessageRepository("mongodb://messagedb"));
             base.ApplicationStartup(container, pipelines);
         }
 
