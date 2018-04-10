@@ -158,7 +158,7 @@
                 <section>
                     Start Cert-Store
                     <pre><code data-trim contenteditable>$ docker create volume rabbit-certstore</code></pre> Starten CA
-                    <pre><code data-trim contenteditable>$ docker run -it --rm rabbit-certstore:/rabbit-ssl 
+                    <pre><code data-trim contenteditable>$ docker run -it --rm -v rabbit-certstore:/rabbit-ssl 
     fpommerening/msrmq:ssl-ca /bin/bash</code></pre> Zertifikate erstellen
                     <pre><code data-trim contenteditable>cd /usr/local/bin/
 ./ca.sh MyCA
@@ -167,7 +167,7 @@
                 </section>
                 <section>
                     Start RabbitMQ mit SSL
-                    <pre><code data-trim contenteditable>$ docker run -d --name rabbitssl rabbit-certstore:/rabbit-ssl 
+                    <pre><code data-trim contenteditable>$ docker run -d --name rabbitssl -v rabbit-certstore:/rabbit-ssl 
     -p 15671:15671 -p 5671:5671 
     -e RABBITMQ_SSL_CACERTFILE=/rabbitssl/ca/cacert.pem 
     -e RABBITMQ_SSL_CERTFILE=/rabbitssl/server/cert.pem 
