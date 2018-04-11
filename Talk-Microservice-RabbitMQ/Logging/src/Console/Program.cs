@@ -1,6 +1,6 @@
 ﻿using System;
 using EasyNetQ;
-using FP.MsRmq.Logging.Contracts;
+using FP.MdDevDays2018.Logging.Contracts;
 
 namespace FP.MdDevDays2018.Logging.Console
 {
