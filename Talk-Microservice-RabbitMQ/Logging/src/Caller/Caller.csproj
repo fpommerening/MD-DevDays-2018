@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>FP.MdDevDays2018.Logging.Caller</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Caller</PackageId>
+    <RootNamespace>FP.MdDevDays2018.Logging.Caller</RootNamespace>
+  </PropertyGroup>
+
+</Project>

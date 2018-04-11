@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>FP.MdDevDays2018.Logging.Contracts</AssemblyName>
+    <PackageId>Contracts</PackageId>
+    <RootNamespace>FP.MdDevDays2018.Logging.Contracts</RootNamespace>
+  </PropertyGroup>
+
+</Project>

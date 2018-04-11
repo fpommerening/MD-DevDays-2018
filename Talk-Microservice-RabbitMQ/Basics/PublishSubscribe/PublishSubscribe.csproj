@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>FP.MdDevDays2018.Basics.PublishSubscribe</AssemblyName>
+    <RootNamespace>FP.MdDevDays2018.Basics.PublishSubscribe</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EasyNetQ" Version="2.3.1" />
+  </ItemGroup>
+
+</Project>
