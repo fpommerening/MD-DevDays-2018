@@ -11,7 +11,6 @@ namespace FP.MsRmq.Cluster.Capture
             IBus myBus = null;
             try
             {
-                myBus = RabbitHutch.CreateBus("host=localhost:5672,localhost:5673,localhost:5674;prefetchcount=1");
                 //PublishManual(myBus);
                 PublishAutomatic(myBus);
 
