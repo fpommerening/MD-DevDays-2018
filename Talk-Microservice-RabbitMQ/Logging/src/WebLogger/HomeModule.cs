@@ -6,7 +6,7 @@ namespace FP.MdDevDays2018.Logging.WebLogger
     {
         public HomeModule()
         {
-            Get("/", args => "Hello Developer Open Space 2016");
+            Get("/", args => "Hello Magdeburg");
         }
     }
 }
