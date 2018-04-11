@@ -1,10 +1,12 @@
-version: '2'
+version: '3.2'
 services: 
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - 5672:5672
       - 15672:15672
+    networks: 
+      - rabbitnet
 
   weblogger1:
     image: fpommerening/msrmq:logging-web
@@ -13,7 +15,9 @@ services:
     hostname: weblogger1
     environment:
       - ConnectingStringRabbitMQ=host=rabbitmq
-    
+    networks: 
+      - rabbitnet
+
   weblogger2:
     image: fpommerening/msrmq:logging-web
     depends_on:
@@ -21,6 +25,8 @@ services:
     hostname: weblogger2
     environment:
       - ConnectingStringRabbitMQ=host=rabbitmq
+    networks: 
+      - rabbitnet
 
   weblogger3:
     image: fpommerening/msrmq:logging-web
@@ -29,6 +35,8 @@ services:
     hostname: weblogger3
     environment:
       - ConnectingStringRabbitMQ=host=rabbitmq
+    networks: 
+      - rabbitnet
 
   loadbalancer:
     image: fpommerening/msrmq:logging-loadbalancer
@@ -39,17 +47,26 @@ services:
     ports:
       - 80
     hostname: loadbalancer
-      
+    networks: 
+      - rabbitnet
+
 # logconsole:
-#   image: fpommerening/msrmq:logging-console
+#   image: fpommerening/msrmq:logging-consolen
 #   depends_on: 
 #     - RabbitMQ
 #   hostname: logconsole
 
-  loggingcaller:
-    image: fpommerening/msrmq:logging-caller
-    depends_on: 
-      - loadbalancer
-    hostname: loggingcaller
-    environment:
-      - TargetUrl=http://loadbalancer:80/Service/
+#  loggingcaller:
+#    image: fpommerening/msrmq:logging-caller
+#    depends_on: 
+#      - loadbalancer
+#    hostname: loggingcaller
+#    environment:
+#      - TargetUrl=http://loadbalancer:80/Service/
+#    networks: 
+#      - rabbitnet
+
+networks: 
+  rabbitnet:
+     external:
+      name: rabbitnet
