@@ -11,8 +11,7 @@ namespace FP.MsRmq.PluginScheduler
             IBus myBus = null;
             try
             {
-                myBus = RabbitHutch.CreateBus("host=localhost", 
-                    register => register.Register<IScheduler, DelayedExchangeScheduler>() );
+               
                 StartSubscription(myBus);
                 ScheduleMessage(myBus);
 
@@ -47,7 +46,6 @@ namespace FP.MsRmq.PluginScheduler
                     Console.WriteLine("Enter the delay in seconds");
                     var delayInSeconds = Convert.ToInt32(Console.ReadLine());
 
-                    myBus.FuturePublish(TimeSpan.FromSeconds(delayInSeconds), new FutureMessage { Content = content });
 
                 }
                 System.Threading.Thread.Sleep(1000);
