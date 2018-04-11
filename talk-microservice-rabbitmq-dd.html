@@ -156,8 +156,9 @@
                     <img src="images/IoTApp.svg" alt="IoT App" style="border:0px;width:800px">
                 </section>
                 <section>
-                    Start Cert-Store
-                    <pre><code data-trim contenteditable>$ docker create volume rabbit-certstore</code></pre> Starten CA
+                    Erstelle Certstore - Volume 
+                    <pre><code data-trim contenteditable>$ docker create volume rabbit-certstore</code></pre>
+                    Starten CA
                     <pre><code data-trim contenteditable>$ docker run -it --rm -v rabbit-certstore:/rabbit-ssl 
     fpommerening/msrmq:ssl-ca /bin/bash</code></pre> Zertifikate erstellen
                     <pre><code data-trim contenteditable>cd /usr/local/bin/
